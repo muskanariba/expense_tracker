@@ -3,84 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Expense Tracker</title>
+  <title>Personal Expense Tracker</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
 
-  <main class="container">
+  <div class="container">
 
-    <header>
+    <header class="header">
       <div>
-        <h1> Expense Tracker</h1>
-        <p>Manage your daily expenses easily</p>
+        <h1>Expense Tracker</h1>
+        <p>Track and manage your daily expenses</p>
       </div>
+
+      <span class="online">
+        <i></i> Live
+      </span>
     </header>
+
 
     <section class="stats">
 
-      <div class="card">
-        <span>Total Expenses</span>
-        <h2 id="totalExpenses">0</h2>
+      <div class="stat-card">
+        <div>
+          <span>Total Expenses</span>
+          <h2 id="totalExpenses">0</h2>
+        </div>
+
+        <div class="icon blue">Stats</div>
       </div>
 
-      <div class="card">
-        <span>Total Spent</span>
-        <h2>Rs. <span id="totalAmount">0</span></h2>
+
+      <div class="stat-card">
+        <div>
+          <span>Total Amount Spent</span>
+          <h2>Rs. <span id="totalAmount">0</span></h2>
+        </div>
+
+        <div class="icon green">Money</div>
       </div>
 
     </section>
 
+
     <section class="box">
 
-      <h2>Add Expense</h2>
+      <div class="section-title">
+        <div>
+          <small>NEW EXPENSE</small>
+          <h2>Add Expense</h2>
+        </div>
+
+        <div class="plus">+</div>
+      </div>
+
 
       <form id="expenseForm">
 
-        <input
-          id="title"
-          type="text"
-          placeholder="Expense title"
-          required
-        >
+        <div class="field">
+          <label for="title">Expense Title</label>
 
-        <input
-          id="amount"
-          type="number"
-          placeholder="Amount"
-          required
-        >
+          <input
+            type="text"
+            id="title"
+            placeholder="e.g. Lunch"
+            required
+          >
+        </div>
 
-        <select id="category" required>
-          <option value="">Category</option>
-          <option value="Food">🍔 Food</option>
-          <option value="Travel">🚗 Travel</option>
-          <option value="Shopping">🛍️ Shopping</option>
-          <option value="Bills">📄 Bills</option>
-          <option value="Other">📦 Other</option>
-        </select>
 
-        <input
-          id="date"
-          type="date"
-          required
-        >
+        <div class="field">
+          <label for="amount">Amount</label>
 
-        <button type="submit">+ Add Expense</button>
+          <input
+            type="number"
+            id="amount"
+            placeholder="e.g. 500"
+            min="1"
+            required
+          >
+        </div>
+
+
+        <div class="field">
+          <label for="category">Category</label>
+
+          <select id="category" required>
+            <option value="">Select category</option>
+            <option value="Food">Food</option>
+            <option value="Travel">Travel</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Bills">Bills</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label for="date">Date</label>
+
+          <input
+            type="date"
+            id="date"
+            required
+          >
+        </div>
+
+
+        <button type="submit" class="add-btn">
+          + Add Expense
+        </button>
 
       </form>
 
     </section>
 
+
     <section class="box">
 
       <div class="table-title">
-        <h2>Recent Expenses</h2>
-        <span>Live</span>
+
+        <div>
+          <h2>Recent Expenses</h2>
+          <p>Your saved expenses</p>
+        </div>
+
+        <span class="live">
+          <i></i> Live
+        </span>
+
       </div>
 
-      <div class="table-scroll">
+
+      <div class="table-wrapper">
 
         <table>
 
@@ -102,11 +158,13 @@
 
     </section>
 
+
     <footer>
-      Expense Tracker • Firebase Firestore
+      Personal Expense Tracker • Firebase Firestore
     </footer>
 
-  </main>
+  </div>
+
 
   <script type="module" src="/script.js"></script>
 

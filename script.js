@@ -9,10 +9,8 @@ import {
   doc
 } from "firebase/firestore";
 
+import "./style.css";
 
-// ===============================
-// Firebase Configuration
-// ===============================
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -25,23 +23,12 @@ const firebaseConfig = {
 };
 
 
-// ===============================
-// Initialize Firebase
-// ===============================
-
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
 const expensesRef = collection(db, "expenses");
 
-
-// ===============================
-// HTML Elements
-// ===============================
-
 const form = document.getElementById("expenseForm");
-
 const expenseList = document.getElementById("expenseList");
 
 const totalExpenses =
@@ -51,9 +38,42 @@ const totalAmount =
   document.getElementById("totalAmount");
 
 
-// ===============================
-// Add Expense
-// ===============================
+// Toast notification
+
+function showToast(message, type = "success") {
+
+  const oldToast = document.querySelector(".toast");
+
+  if (oldToast) {
+    oldToast.remove();
+  }
+
+  const toast = document.createElement("div");
+
+  toast.className = `toast ${type}`;
+
+  const icon = type === "success" ? "✓" : "✕";
+
+  toast.innerHTML = `
+    <span class="toast-icon">${icon}</span>
+    <span>${message}</span>
+  `;
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+
+    toast.classList.add("hide");
+
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+
+  }, 2500);
+}
+
+
+// Add expense
 
 form.addEventListener("submit", async (event) => {
 
@@ -74,7 +94,10 @@ form.addEventListener("submit", async (event) => {
 
   if (!title || !amount || !category || !date) {
 
-    alert("Please fill all fields.");
+    showToast(
+      "Please fill all fields.",
+      "error"
+    );
 
     return;
   }
@@ -83,40 +106,35 @@ form.addEventListener("submit", async (event) => {
   try {
 
     await addDoc(expensesRef, {
-
       title: title,
-
       amount: amount,
-
       category: category,
-
       date: date
-
     });
 
 
-    alert("Expense added successfully!");
-
     form.reset();
 
-    loadExpenses();
+    await loadExpenses();
 
-  }
+    showToast(
+      "Expense added successfully."
+    );
 
-  catch (error) {
+  } catch (error) {
 
     console.error(error);
 
-    alert("Error adding expense.");
-
+    showToast(
+      "Failed to add expense.",
+      "error"
+    );
   }
 
 });
 
 
-// ===============================
-// Load Expenses
-// ===============================
+// Load expenses
 
 async function loadExpenses() {
 
@@ -125,9 +143,7 @@ async function loadExpenses() {
     expenseList.innerHTML = "";
 
     let count = 0;
-
     let total = 0;
-
 
     const snapshot =
       await getDocs(expensesRef);
@@ -179,71 +195,67 @@ async function loadExpenses() {
     totalAmount.textContent =
       total.toLocaleString();
 
-  }
 
-  catch (error) {
+  } catch (error) {
 
     console.error(error);
 
-    alert("Error loading expenses.");
+    showToast(
+      "Could not load expenses.",
+      "error"
+    );
 
   }
 
 }
 
 
-// ===============================
-// Delete Expense
-// ===============================
+// Delete expense
 
-expenseList.addEventListener("click", async (event) => {
+expenseList.addEventListener(
+  "click",
+  async (event) => {
 
-  if (!event.target.classList.contains("delete")) {
-
-    return;
-
-  }
-
-
-  const id =
-    event.target.dataset.id;
+    if (
+      !event.target.classList.contains("delete")
+    ) {
+      return;
+    }
 
 
-  const confirmDelete =
-    confirm("Are you sure you want to delete this expense?");
+    const id =
+      event.target.dataset.id;
 
 
-  if (!confirmDelete) {
+    try {
 
-    return;
-
-  }
-
-
-  try {
-
-    await deleteDoc(
-      doc(db, "expenses", id)
-    );
+      await deleteDoc(
+        doc(db, "expenses", id)
+      );
 
 
-    loadExpenses();
+      await loadExpenses();
 
-  }
+      showToast(
+        "Expense deleted successfully."
+      );
 
-  catch (error) {
 
-    console.error(error);
+    } catch (error) {
 
-    alert("Error deleting expense.");
+      console.error(error);
+
+      showToast(
+        "Failed to delete expense.",
+        "error"
+      );
+
+    }
 
   }
+);
 
-});
 
-
-// ===============================
-// Load expenses when app starts
-// ===============================
+// Load when page opens
 
 loadExpenses();
